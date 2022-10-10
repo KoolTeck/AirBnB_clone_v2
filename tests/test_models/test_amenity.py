@@ -82,4 +82,4 @@ class TestAmenity(unittest.TestCase):
         self.assertIsInstance(new_amenity, Amenity)
         self.assertIsNotNone(new_amenity.id)
         self.assertIsNotNone(new_amenity.created_at)
-        self.assertIsNotNone(new_amenity.updated_at
+        self.assertIsNotNone(new_amenity.updated_at)
