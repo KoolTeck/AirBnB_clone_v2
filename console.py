@@ -142,7 +142,7 @@ class HBNBCommand(cmd.Cmd):
         except KeyError:
             print("** no instance found **")
 
-    def do_all(self,line):
+    def do_all(self, line):
         """
            Prints all string representation of all
         instances based or not on the class name.
@@ -208,7 +208,6 @@ class HBNBCommand(cmd.Cmd):
                     storage.save()
                 except KeyError:
                     print("** no instance found **")
-
 
 
 if __name__ == "__main__":

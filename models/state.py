@@ -20,9 +20,12 @@ class State(BaseModel, Base):
     name = Column(String(128), nullable=False)
     cities = relationship("City", backref="state", cascade="delete")
 
+
 @property
 def cities(self):
-    """ returns a list of City instances with state_id equals to the current State.id
+    """
+    returns a list of City instances with state_id
+    equals to the current State.id
     """
     city_list = []
     for city in models.storage.all("City").values():
