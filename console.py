@@ -84,14 +84,8 @@ class HBNBCommand(cmd.Cmd):
                     val = val.strip('"').replace('_', " ")
                 kwargs[key] = val
             new_obj = eval(arg_list[0])(**kwargs)
-            storage.new(new_obj)
         print(new_obj.id)
         new_obj.save()
-
-    def help_create(self):
-        """ Help information for the create method """
-        print("Creates a class of any type")
-        print("[Usage]: create <className>\n")
 
     def do_show(self, args):
         """ Method to show an individual object """
@@ -119,11 +113,6 @@ class HBNBCommand(cmd.Cmd):
             print(storage._FileStorage__objects[key])
         except KeyError:
             print("** no instance found **")
-
-    def help_show(self):
-        """ Help information for the show command """
-        print("Shows an individual instance of a class")
-        print("[Usage]: show <className> <objectId>\n")
 
     def do_destroy(self, args):
         """ Destroys a specified object """
@@ -153,33 +142,28 @@ class HBNBCommand(cmd.Cmd):
         except KeyError:
             print("** no instance found **")
 
-    def help_destroy(self):
-        """ Help information for the destroy command """
-        print("Destroys an individual instance of a class")
-        print("[Usage]: destroy <className> <objectId>\n")
-
-    def do_all(self, args):
-        """ Shows all objects, or all objects of a class"""
-        print_list = []
-
-        if args:
-            args = args.split(' ')[0]  # remove possible trailing args
-            if args not in HBNBCommand.classes:
+    def do_all(self,line):
+        """
+           Prints all string representation of all
+        instances based or not on the class name.
+        Ex: $ all BaseModel or $ all
+        """
+        inst_list = []
+        if line:
+            args = line.split(" ")
+            if args[0] not in HBNBCommand.classes:
                 print("** class doesn't exist **")
-                return
-            for k, v in storage._FileStorage__objects.items():
-                if k.split('.')[0] == args:
-                    print_list.append(str(v))
+                return False
+            else:
+                all_inst = storage.all(eval(args[0]))
+                for val in all_inst.values():
+                    inst_list.append(val.__str__())
+                print(inst_list)
         else:
-            for k, v in storage._FileStorage__objects.items():
-                print_list.append(str(v))
-
-        print(print_list)
-
-    def help_all(self):
-        """ Help information for the all command """
-        print("Shows all objects, or all of a class")
-        print("[Usage]: all <className>\n")
+            all_inst = storage.all()
+            for val in all_inst.keys():
+                inst_list.append(val.__str__())
+            print(inst_list)
 
     def do_count(self, args):
         """Count current number of class instances"""
@@ -225,10 +209,6 @@ class HBNBCommand(cmd.Cmd):
                 except KeyError:
                     print("** no instance found **")
 
-    def help_update(self):
-        """ Help information for the update class """
-        print("Updates an object with new information")
-        print("Usage: update <className> <id> <attName> <attVal>\n")
 
 
 if __name__ == "__main__":

@@ -57,7 +57,7 @@ class DBStorage:
                         obj.id
                     )
                     dic[key] = obj
-            return dic
+        return dic
 
     def new(self, obj):
         """
@@ -89,4 +89,4 @@ class DBStorage:
             expire_on_commit=False
         )
         Session = scoped_session(session_factory)
-        self.__session = Session
+        self.__session = Session()

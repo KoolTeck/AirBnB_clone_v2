@@ -10,7 +10,6 @@ class City(BaseModel, Base):
     """ The city class, contains state ID and name
     Atrr:
         __tablename__(sqlalchemy): rep. the table name
-        id(sqlalchemy string): the id column
         name(sqlalchemy string): rep the name column
         state_id(sqlalchemy string): the state id of the city
 
@@ -18,4 +17,3 @@ class City(BaseModel, Base):
     __tablename__ = "cities"
     name = Column(String(128), nullable=False)
     state_id = Column(String(60), ForeignKey('states.id'), nullable=False)
-    states = relationship("State", back_populates="city")

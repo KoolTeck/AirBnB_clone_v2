@@ -46,7 +46,9 @@ class BaseModel:
 
     def __str__(self):
         class_name = self.__class__.__name__
-        return "[{}] ({}) {}".format(class_name, self.id, self.__dict__)
+        d = self.__dict__
+        d.pop("_sa_instance_state", None)
+        return "[{}] ({}) {}".format(class_name, self.id, d)
 
     def save(self):
         """
