@@ -3,12 +3,27 @@
 from os import getenv
 import models
 from models.review import Review
+from models.amenity import Amenity
 from models.base_model import BaseModel, Base
 from sqlalchemy import String, Column, Integer
-from sqlalchemy import ForeignKey, Float
+from sqlalchemy import ForeignKey, Float, Table
 from sqlalchemy.orm import relationship
 
 
+association_table = Table(
+    "place_amenity",
+    Base.metadata,
+    Column(
+        "place_id",
+        String(60), ForeignKey("places.id"),
+        primary_key=True, nullable=False
+        ),
+    Column(
+        "amenity_id",
+        String(60), ForeignKey("amenities.id"),
+        primary_key=True, nullable=False
+        )
+)
 class Place(BaseModel, Base):
     """ The place class mapping """
     __tablename__ = "places"
@@ -44,6 +59,7 @@ class Place(BaseModel, Base):
     longitude = Column(Float)
     amenity_ids = []
     reviews = relationship("Review", backref="place", cascade="delete")
+    amenities = relationship("Amenity", secondary="place_amenity", viewonly=False)
 
     if (getenv("HBNB_TYPE_STORAGE") != 'db'):
         @property
@@ -53,3 +69,20 @@ class Place(BaseModel, Base):
                 if review.place_id == self.id:
                     review_list.append(review)
             return review_list
+
+        @property
+        def amenities(self):
+            """
+            returns a list of amenities linked to the places class
+            """
+            amenities_list = []
+            for amenity in models.storage.all(Amenity).values():
+                if amenity.id in self.amenity_ids:
+                    amenities_list.append(amenity)
+            return amenities_list
+
+        @amenities.setter
+        def amenities(self, obj):
+            """ sets amenity id in the attribut amenity_ids """
+            if type(value) == Amenity:
+                self.amenity_ids.append(value.id)

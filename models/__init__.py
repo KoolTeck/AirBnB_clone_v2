@@ -3,6 +3,7 @@
 from os import getenv
 
 
+__all__ = ["city.City", "state.State", "place.Place", "user.State", "amenity.Amenity"]
 if getenv("HBNB_TYPE_STORAGE") == "db":
     from models.engine.db_storage import DBStorage
     storage = DBStorage()
