@@ -82,6 +82,11 @@ class HBNBCommand(cmd.Cmd):
                     return False
                 if val.startswith('"'):
                     val = val.strip('"').replace('_', " ")
+                else:
+                    try:
+                        val = eval(val)
+                    except (SyntaxError, NameError):
+                        pass
                 kwargs[key] = val
             new_obj = eval(arg_list[0])(**kwargs)
         print(new_obj.id)
