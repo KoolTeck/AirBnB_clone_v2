@@ -24,6 +24,8 @@ association_table = Table(
         primary_key=True, nullable=False
         )
 )
+
+
 class Place(BaseModel, Base):
     """ The place class mapping """
     __tablename__ = "places"
@@ -58,8 +60,12 @@ class Place(BaseModel, Base):
     latitude = Column(Float)
     longitude = Column(Float)
     amenity_ids = []
-    reviews = relationship("Review", backref="place", cascade="delete")
-    amenities = relationship("Amenity", secondary="place_amenity", viewonly=False)
+    reviews = relationship(
+        "Review", backref="place",
+        cascade="delete")
+    amenities = relationship(
+        "Amenity", secondary="place_amenity",
+        viewonly=False)
 
     if (getenv("HBNB_TYPE_STORAGE") != 'db'):
         @property
@@ -82,7 +88,7 @@ class Place(BaseModel, Base):
             return amenities_list
 
         @amenities.setter
-        def amenities(self, obj):
+        def amenities(self, value):
             """ sets amenity id in the attribut amenity_ids """
             if type(value) == Amenity:
                 self.amenity_ids.append(value.id)

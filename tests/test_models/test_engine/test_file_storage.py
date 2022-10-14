@@ -2,16 +2,81 @@
 """
    file testing the file_storage module
 """
-
+import os
+import json
 import unittest
 import uuid
 from datetime import datetime
 from models.engine.file_storage import FileStorage
 from models.base_model import BaseModel
+from models.user import User
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.place import Place
+from models.review import Review
 from os import remove
 
 class testFileStorage(unittest.TestCase):
     """ the file storage module test class """
+
+    @classmethod
+    def setUpClass(cls):
+        """FileStorage testing setup.
+        Temporarily renames any existing file.json.
+        Resets FileStorage objects dictionary.
+        Creates instances of all class types for testing.
+        """
+        try:
+            os.rename("file.json", "tmp")
+        except IOError:
+            pass
+        FileStorage._FileStorage__objects = {}
+        cls.storage = FileStorage()
+        cls.base = BaseModel()
+        key = "{}.{}".format(type(cls.base).__name__, cls.base.id)
+        FileStorage._FileStorage__objects[key] = cls.base
+        cls.user = User()
+        key = "{}.{}".format(type(cls.user).__name__, cls.user.id)
+        FileStorage._FileStorage__objects[key] = cls.user
+        cls.state = State()
+        key = "{}.{}".format(type(cls.state).__name__, cls.state.id)
+        FileStorage._FileStorage__objects[key] = cls.state
+        cls.place = Place()
+        key = "{}.{}".format(type(cls.place).__name__, cls.place.id)
+        FileStorage._FileStorage__objects[key] = cls.place
+        cls.city = City()
+        key = "{}.{}".format(type(cls.city).__name__, cls.city.id)
+        FileStorage._FileStorage__objects[key] = cls.city
+        cls.amenity = Amenity()
+        key = "{}.{}".format(type(cls.amenity).__name__, cls.amenity.id)
+        FileStorage._FileStorage__objects[key] = cls.amenity
+        cls.review = Review()
+        key = "{}.{}".format(type(cls.review).__name__, cls.review.id)
+        FileStorage._FileStorage__objects[key] = cls.review
+
+    @classmethod
+    def tearDownClass(cls):
+        """FileStorage testing teardown.
+        Restore original file.json.
+        Delete all test class instances.
+        """
+        try:
+            os.remove("file.json")
+        except IOError:
+            pass
+        try:
+            os.rename("tmp", "file.json")
+        except IOError:
+            pass
+        del cls.storage
+        del cls.base
+        del cls.user
+        del cls.state
+        del cls.place
+        del cls.city
+        del cls.amenity
+        del cls.review
 
     def test_file_storage_class_membership(self):
         "checks the instantiation of the file_storage class"
@@ -38,30 +103,35 @@ class testFileStorage(unittest.TestCase):
         obj_key = "BaseModel.{}".format(dic['id'])
         self.assertIsInstance(all_objs[obj_key], BaseModel)
 
-    def test_file_storage_save_method(self):
-        """FileStorage save method updates __objects
-        Test if file already exists.
-        with self.assertRaises(FileNotFoundError):
-            open('file.json', 'r')
-        """
-        base = BaseModel()
-        key = '{}.{}'.format(type(base).__name__, base.id)
-        base_updated_0 = base.updated_at
-        storage = FileStorage()
-        objs_0 = storage.all()
-        dt_0 = objs_0[key].updated_at
+    
+    def test_reload(self):
+        """Test reload method."""
+        bm = BaseModel()
+        with open("file.json", "w", encoding="utf-8") as f:
+            key = "{}.{}".format(type(bm).__name__, bm.id)
+            json.dump({key: bm.to_dict()}, f)
+        self.storage.reload()
+        store = FileStorage._FileStorage__objects
+        self.assertIn("BaseModel." + bm.id, store)
 
-        base.save()
-
-        base_updated_1 = base.updated_at
-        objs_1 = storage.all()
-        dt_1 = objs_1[key].updated_at
-
-        self.assertNotEqual(base_updated_1, base_updated_0)
-        self.assertNotEqual(dt_1, dt_0)
-
+    def test_reload_no_file(self):
+        """Test reload method with no existing file.json."""
         try:
-            with open('file.json', 'r'):
-                remove('file.json')
-        except FileNotFoundError:
-            self.assertEqual(1, 2)
+            self.storage.reload()
+        except Exception:
+            self.fail
+
+    def test_delete(self):
+        """Test delete method."""
+        bm = BaseModel()
+        key = "{}.{}".format(type(bm).__name__, bm.id)
+        FileStorage._FileStorage__objects[key] = bm
+        self.storage.delete(bm)
+        self.assertNotIn(bm, FileStorage._FileStorage__objects)
+
+    def test_delete_nonexistant(self):
+        """Test delete method with a nonexistent object."""
+        try:
+            self.storage.delete(BaseModel())
+        except Exception:
+            self.fail

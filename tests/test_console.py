@@ -6,6 +6,7 @@ from io import StringIO
 from unittest.mock import patch
 import models
 from models.engine.file_storage import FileStorage
+from models.engine.db_storage import DBStorage
 from console import HBNBCommand
 import pep8
 
@@ -96,7 +97,7 @@ class TestHBNBCommand(unittest.TestCase):
             self.HBNB.onecmd('create abcdgibberrish')
             self.assertEqual("** class doesn't exist **\n", f.getvalue())
 
-    @unittest.skipIf(type(models.storage) == "DbStorage", "Now testing DBS")
+    @unittest.skipIf(type(models.storage) == DBStorage, "Now testing DBS")
     def test_create_without_param(self):
         """Test the create command without param """
         with patch("sys.stdout", new=StringIO()) as f:
@@ -159,10 +160,9 @@ class TestHBNBCommand(unittest.TestCase):
             self.assertIn(state1, place_objs)
             self.assertIn("'city_id': '0001'", place_objs)
             self.assertIn("'name': 'My little house'", place_objs)
-            self.assertIn("'number_rooms': '4'", place_objs)
-            self.assertIn("'number_bathrooms': '2'", place_objs)
-            self.assertIn("'max_guest': '10'", place_objs)
-            self.assertIn("'price_by_night': '300'", place_objs)
-            self.assertIn("'latitude': '37.773972'", place_objs)
-            self.assertIn("'longitude': '-122.431297'", place_objs)
-            
+            self.assertIn("'number_rooms': 4", place_objs)
+            self.assertIn("'number_bathrooms': 2", place_objs)
+            self.assertIn("'max_guest': 10", place_objs)
+            self.assertIn("'price_by_night': 300", place_objs)
+            self.assertIn("'latitude': 37.773972", place_objs)
+            self.assertIn("'longitude': -122.431297", place_objs)
