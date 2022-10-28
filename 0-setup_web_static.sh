@@ -19,22 +19,31 @@ ln -sf /data/web_static/releases/test/ /data/web_static/current
 # Change ownership
 chown -R ubuntu /data
 chgrp -R ubuntu /data
-# Create default page
-echo "Holberton School" > /var/www/html/index.html
 
-# Configurate server
-ufw allow 'Nginx HTTP'
+echo "Hello World!" | sudo tee /var/www/html/index.html
+echo "Ceci n'est pas une page" | sudo tee /usr/share/nginx/html/404.html
+printf "server {
+    listen 80;
+    listen [::]:80 default_server;
+    root   /var/www/html/;
+    index  index.html index.htm index.nginx-debian.html 404.html;
 
-f_config="/etc/nginx/sites-available/default"
-# Add redirection
-new_site="https://github.com/EstephaniaCalvoC/"
-sed -i "/listen 80 default_server/a rewrite ^/redirect_me $new_site permanent;" $f_config
+    location / {
+    	add_header X-Served-By \$hostname;
+    }
 
-# Add 404 redirection
-echo "Ceci n'est pas une page" > /usr/share/nginx/html/my_404.html
-new_404="my_404.html"
-l_new_404="/my_404.html {root /usr/share/nginx/html;\n internal;}"
-sed -i "/listen 80 default_server/a error_page 404 /$new_404; location = $l_new_404" $f_config
-sed -i '/listen 80 default_server/a location /hbnb_static/ { alias /data/web_static/current/;}' $f_config
+    location /redirect_me {
+        return 301 https://google.com/;
+    }
 
+    error_page 404 /404.html;
+    location /404 {
+       root /usr/share/nginx/html;
+       internal;
+    }
+
+    location /hbnb_static/ {
+       alias /data/web_static/current/;
+    }
+}" > /etc/nginx/sites-available/default
 sudo service nginx restart
