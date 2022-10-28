@@ -21,6 +21,7 @@ sudo chown -R "$USER":"$USER" /var/www/html/
 echo "Hello World!" | sudo tee /var/www/html/index.html
 echo "Ceci n'est pas une page" | sudo tee /usr/share/nginx/html/404.html
 sudo chown -R "$USER":"$USER" /etc/nginx/
+sudo ufw allow 'Nginx HTTP'
 printf "server {
        listen 80;
        listen [::]:80 default_server;
