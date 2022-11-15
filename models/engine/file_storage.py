@@ -72,3 +72,7 @@ class FileStorage:
                         del self.__objects[key]
             except RuntimeError:
                 pass
+
+    def close(self):
+        """ calls the reload method """
+        self.reload()
