@@ -22,8 +22,8 @@ def states_list():
     - UL: with the list of all State
     - LI: <state.id>: <B><state.name></B>
     """
-    states = storage.all("State")
-    return render_template("7-states_list.html", states=states)
+    all_states = storage.all("State")
+    return render_template("7-states_list.html", all_states=all_states)
 
 
 @app.route("/states/<id>", strict_slashes=False)
