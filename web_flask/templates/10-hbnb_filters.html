@@ -32,15 +32,14 @@
             </UL>
           </DIV>
 
-        </DIV>
-	<DIV class="amenities">
+        </DIV><DIV class="amenities">
           <H3>Amenities</H3>
           <H4>&nbsp;</H4>
           <UL class="popover">
           {% for amenity in amenities.values()|sort(attribute="name") %}
             <LI>{{ amenity.name }}</LI>
           {% endfor %}
-          </UL>
+          </UL>  
         </DIV>
         <BUTTON>Search</BUTTON>
       </SECTION>
