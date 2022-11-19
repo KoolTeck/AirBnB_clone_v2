@@ -1,18 +1,72 @@
 header {
-	background-color: white;
-	height: 70px;
-	width: 100%;
-	
-	border-bottom: 1px solid #CCCCCC;
+    height: 70px;
+    width: 100%;
+    background-color: white;
+    border-bottom: 1px solid #CCCCCC;
+    background-image: url("../images/logo.png");
+    background-repeat: no-repeat;
+    background-position: 20px center;
+    display: flex;
+    justify-content: right;
+    align-items: center;
 }
 
-#header_logo {
-	height: 100%;
-	width: 142px;
 
-	background-image: url("../images/logo.png");
-	background-repeat: no-repeat;
-	background-position: center;
+.toggle {
+    width: 40px;
+    height: auto;
+    margin-right: 25px;
+    visibility: hidden;
+}
 
-	margin-left: 20px;
+.toggle .line {
+    border: 2px solid #FF5A5F;
+    margin: 4px;
+    border-radius: 4px;
+    position: relative;
+}
+
+
+ .toggle input[type="checkbox"] {
+    position: absolute;
+    top: 22px;
+    height: 20px;
+    width: 21px;
+    right: 28px;
+    z-index: 20;
+    visibility: hidden;
+}
+
+.toggle input[type="checkbox"]:checked + label .line {
+    transform: scale(1.5);
+    border: 2px solid #CCCCCC;
+    background-color: #FF5A5F;
+}
+
+.toggle input[type="checkbox"]:checked + label .line._1 {
+    visibility: hidden;
+}
+
+.toggle input[type="checkbox"]:checked + label .line._2 {
+    top: 7px;
+    transform: rotate(45deg);
+}
+
+.toggle input[type="checkbox"]:checked + label .line._3 {
+    transform:  rotate(-45deg);
+}
+
+
+@media screen and (max-width: 480px) {
+    
+    .toggle {
+        visibility: visible;
+	    margin-right: 15px;
+    }
+
+    
+    .show {
+        display: block;
+        visibility: visible;
+    }
 }
